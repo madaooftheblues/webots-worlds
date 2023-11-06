@@ -9,8 +9,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.19792561184918514 0.3571745850846012 0.9128262528782618 1.0912067983931342
-  position -1.0224545837140904 -1.6484796185680866 0.920537284755977
+  orientation 0.3249483215758103 0.4346978254093182 -0.8399085598381967 0.4574801926967751
+  position -0.8253925331794031 0.46607317533232995 0.29050365689600516
 }
 TexturedBackground {
   skyColor [
@@ -45,8 +45,11 @@ Solid {
   children [
     Shape {
       appearance PBRAppearance {
-        roughness 1
-        metalness 0
+        baseColorMap ImageTexture {
+          url [
+            "../../../Webots/red_brick_wall.jpg"
+          ]
+        }
       }
       geometry DEF BALL_GEOMETRY Sphere {
         radius 0.05
@@ -54,6 +57,7 @@ Solid {
       }
     }
   ]
+  name "Ball"
   boundingObject USE BALL_GEOMETRY
   physics Physics {
   }
@@ -61,10 +65,10 @@ Solid {
 Solid {
   translation 0 -0.5 0.05
   children [
-    Shape {
+    DEF WALL_SHAPE Shape {
       appearance PBRAppearance {
-        baseColor 0 0 0
-        roughness 1
+        baseColor 0.101961 0.372549 0.705882
+        roughness 0.5
         metalness 0
       }
       geometry DEF WALL_GEO Box {
@@ -78,16 +82,7 @@ Solid {
 Solid {
   translation 0 0.5 0.05
   children [
-    Shape {
-      appearance PBRAppearance {
-        baseColor 0 0 0
-        roughness 1
-        metalness 0
-      }
-      geometry DEF WALL_GEO Box {
-        size 1 0.01 0.1
-      }
-    }
+    USE WALL_SHAPE
   ]
   name "Wall(3)"
   boundingObject USE WALL_GEO
@@ -96,16 +91,7 @@ Solid {
   translation -0.5 -5.66873e-14 0.05
   rotation 0 0 1 1.5707996938995747
   children [
-    Shape {
-      appearance PBRAppearance {
-        baseColor 0 0 0
-        roughness 1
-        metalness 0
-      }
-      geometry DEF WALL_GEO Box {
-        size 1 0.01 0.1
-      }
-    }
+    USE WALL_SHAPE
   ]
   name "Wall(1)"
   boundingObject USE WALL_GEO
@@ -114,16 +100,7 @@ Solid {
   translation 0.5 3.36704e-06 0.05
   rotation 0 0 1 1.5707996938995747
   children [
-    Shape {
-      appearance PBRAppearance {
-        baseColor 0 0 0
-        roughness 1
-        metalness 0
-      }
-      geometry DEF WALL_GEO Box {
-        size 1 0.01 0.1
-      }
-    }
+    USE WALL_SHAPE
   ]
   name "Wall(2)"
   boundingObject USE WALL_GEO

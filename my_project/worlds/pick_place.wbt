@@ -1,0 +1,59 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/tables/protos/Table.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/robots/universal_robots/protos/UR5e.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/drinks/protos/Can.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/devices/robotiq/protos/Robotiq3fGripper.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/adept/pioneer2/protos/Pioneer2.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/animals/protos/Rabbit.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/Parquetry.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.04038859985394281 0.0004255470921472221 -0.9991839569926603 3.1204679827111192
+  position 2.8359012589967603 -1.1679276529751257 1.274808117181289
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 10 10
+  floorAppearance Parquetry {
+    type "light strip"
+  }
+  wallHeight 1.5
+}
+Table {
+  translation 0 -1.82 0
+  name "table(1)"
+}
+DEF CAN Can {
+  translation 0.17 -1.72 0.8
+  name "TARGET"
+}
+Table {
+}
+Pioneer2 {
+  translation 0 -3.61 0
+  controller "<none>"
+}
+DEF ARM UR5e {
+  translation -0.219999 -1.29 0.75
+  rotation 0 0 1 -1.5707953071795862
+  controller "death_warrant"
+  supervisor TRUE
+  toolSlot [
+    DistanceSensor {
+    }
+    Robotiq3fGripper {
+    }
+  ]
+}
+Rabbit {
+  translation 0 0 0.75
+}

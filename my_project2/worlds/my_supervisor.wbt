@@ -1,0 +1,28 @@
+#VRML_SIM R2023a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/robots/sphero/bb8/protos/BB-8.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.0749745882902225 0.09652775247501244 0.9925024957715897 1.3280978957607967
+  position -2.016269866609039 -10.178073314880944 1.3984462123924304
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 10 10
+}
+Robot {
+  name "supervisor"
+  controller "supervisor_controller"
+  supervisor TRUE
+}
+DEF BB-8 BB-8 {
+  controller "<none>"
+}

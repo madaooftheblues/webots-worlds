@@ -1,0 +1,139 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/tables/protos/Table.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/robots/universal_robots/protos/UR5e.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/devices/robotiq/protos/Robotiq3fGripper.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/adept/pioneer2/protos/Pioneer2.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/Parquetry.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/Floor.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Ceiling.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/fruits/protos/Apple.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/fruits/protos/Orange.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/kitchen/utensils/protos/Wineglass.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/toys/protos/RubberDuck.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.014930162448678234 -0.9974175422268684 0.07025195162676456 5.519337833503812
+  position -3.1065789145066 0.19734670468497925 3.6063936488838
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 10 10
+  floorAppearance Parquetry {
+    type "light strip"
+  }
+  wallHeight 2.7
+}
+Ceiling {
+  translation 0 0 2.7
+}
+DEF APPLE Apple {
+  translation 0.38 -0.38 0.79
+}
+DEF APPLE Apple {
+  translation 0.12 -0.38 0.79
+  name "apple(1)"
+}
+DEF APPLE Apple {
+  translation -0.12 -0.38 0.79
+  name "apple(2)"
+}
+Table {
+}
+DEF ORANGE Orange {
+  translation 0.12 -0.12 0.79
+}
+DEF ORANGE Orange {
+  translation -0.12 -0.12 0.79
+  name "orange(2)"
+}
+DEF ORANGE Orange {
+  translation -0.37 -0.12 0.79
+  name "orange(3)"
+}
+DEF ORANGE Orange {
+  translation 0.38 -0.12 0.79
+  name "orange(1)"
+}
+Solid {
+  translation 0 0 2.7
+  children [
+    Robot {
+      translation 0 0 -0.09
+      children [
+        Camera {
+          rotation 0 1 0 1.5707963267948968
+          fieldOfView 1
+          width 300
+          height 300
+        }
+      ]
+      name "CAM"
+      controller "supervisor_cam_controller"
+      supervisor TRUE
+    }
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Sphere {
+        radius 0.1
+      }
+    }
+  ]
+  name "CAM body"
+  boundingObject Sphere {
+    radius 0.1
+  }
+}
+Floor {
+  translation 0 0 0.75
+  size 1 1
+  appearance Parquetry {
+    type "chequered"
+    colorOverride 0 1 1
+  }
+}
+RubberDuck {
+  translation -0.38 0.38 0.79
+}
+Wineglass {
+  translation -0.38 -0.38 0.75
+}
+Pioneer2 {
+  translation 0 -3.61 0
+  controller "<none>"
+}
+DEF ARM1 UR5e {
+  translation 0 -0.77 0.75
+  rotation 0 0 -0.9999999999999999 0
+  controller "death_warrant"
+  supervisor TRUE
+  toolSlot [
+    DistanceSensor {
+    }
+    Robotiq3fGripper {
+    }
+  ]
+}
+DEF ARM2 UR5e {
+  translation 0 0.77 0.75
+  rotation 0 0 -0.9999999999999999 3.141592653589793
+  name "UR5e(1)"
+  controller "death_warrant"
+  supervisor TRUE
+  toolSlot [
+    DistanceSensor {
+    }
+    Robotiq3fGripper {
+    }
+  ]
+}
