@@ -14,12 +14,13 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/fruits/protos/Orange.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/kitchen/utensils/protos/Wineglass.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/toys/protos/RubberDuck.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/balls/protos/SoccerBall.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.014930162448678234 -0.9974175422268684 0.07025195162676456 5.519337833503812
-  position -3.1065789145066 0.19734670468497925 3.6063936488838
+  orientation 0.12361450545522623 -0.9621402972874972 -0.2429104822287132 5.878429925895237
+  position -4.869945040208526 -0.6678672976306054 3.0547413142374005
 }
 TexturedBackground {
 }
@@ -103,7 +104,7 @@ Floor {
   }
 }
 RubberDuck {
-  translation -0.38 0.38 0.79
+  translation -0.14 0.38 0.79
 }
 Wineglass {
   translation -0.38 -0.38 0.75
@@ -136,4 +137,8 @@ DEF ARM2 UR5e {
     Robotiq3fGripper {
     }
   ]
+}
+SoccerBall {
+  translation -0.38 0.38 0.82
+  radius 0.054
 }
