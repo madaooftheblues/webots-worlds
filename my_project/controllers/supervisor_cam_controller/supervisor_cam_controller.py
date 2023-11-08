@@ -2,18 +2,54 @@
 
 # You may need to import some classes of the controller module. Ex:
 #  from controller import Robot, Motor, DistanceSensor
-from controller import Supervisor, Camera
+from controller import Supervisor, Node, Camera
 import threading
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import uvicorn
+import struct
+import math
 
 # create the Robot instance.
 robot = Supervisor()
-
+emitter = robot.getDevice('emitter')
 # Get the time step of the current world (simulation)
 time_step = int(robot.getBasicTimeStep())
+object_coords = {
+    "orange": [0.12, -0.12, 0.79],
+}
+
+arm_1 = robot.getFromDef('ARM1')
+arm_2 = robot.getFromDef('ARM2')
+
+arm_1_coords = arm_1.getPosition()
+arm_2_coords = arm_2.getPosition()
+dist_1 = math.dist(object_coords['orange'], arm_1_coords)
+dist_2 = math.dist(object_coords['orange'], arm_2_coords)
+
+emitter.setChannel(1)
+message = struct.pack("hd",45,120.08)
+emitter.send(message)
+print(emitter.getChannel())
+"""
+def get_world_info():
+    # Get the root node of the scene
+    root_node = robot.getRoot()
+    root_children = root_node.getField('children')
+    num_of_nodes = root_children.getCount()
+    print(num_of_nodes)
+    robot_nodes = []
+    for i in range(num_of_nodes):
+        node = root_children.getMFNode(i)
+        type = node.getType()
+        name = node.getTypeName()
+        print(name, type)
+        if type == Node.ROBOT:
+            print(node.getPosition())
+            robot_nodes.append(name)
+    print(robot_nodes) 
+    # return {"robots": robots, "objects": objects}
 
 # Create a FastAPI app
 app = FastAPI()
@@ -44,6 +80,7 @@ def start_fastapi_server():
 # Start the FastAPI server in a separate thread
 fastapi_server_thread = threading.Thread(target=start_fastapi_server)
 fastapi_server_thread.start()
+"""
 
 # You should insert a getDevice-like function in order to get the
 # instance of a device of the robot. Something like:
@@ -55,6 +92,8 @@ camera.enable(time_step)
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
 while robot.step(time_step) != -1:
+    message = struct.pack("hd",45,120.08)
+    emitter.send(message)
     # Read the sensors:
     # Enter here functions to read sensor data, like:
     #  val = ds.getValue()

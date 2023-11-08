@@ -6,21 +6,16 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/tables/protos/Table.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/robots/universal_robots/protos/UR5e.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/devices/robotiq/protos/Robotiq3fGripper.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/adept/pioneer2/protos/Pioneer2.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/Parquetry.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/Floor.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Ceiling.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/fruits/protos/Apple.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/fruits/protos/Orange.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/kitchen/utensils/protos/Wineglass.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/toys/protos/RubberDuck.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/balls/protos/SoccerBall.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.12361450545522623 -0.9621402972874972 -0.2429104822287132 5.878429925895237
-  position -4.869945040208526 -0.6678672976306054 3.0547413142374005
+  orientation 0.03595324209247011 -0.9993411288104213 -0.0049671572305734395 5.141568702270474
+  position -2.379890292859521 0.2517788581633025 5.522404934558256
 }
 TexturedBackground {
 }
@@ -36,33 +31,7 @@ RectangleArena {
 Ceiling {
   translation 0 0 2.7
 }
-DEF APPLE Apple {
-  translation 0.38 -0.38 0.79
-}
-DEF APPLE Apple {
-  translation 0.12 -0.38 0.79
-  name "apple(1)"
-}
-DEF APPLE Apple {
-  translation -0.12 -0.38 0.79
-  name "apple(2)"
-}
 Table {
-}
-DEF ORANGE Orange {
-  translation 0.12 -0.12 0.79
-}
-DEF ORANGE Orange {
-  translation -0.12 -0.12 0.79
-  name "orange(2)"
-}
-DEF ORANGE Orange {
-  translation -0.37 -0.12 0.79
-  name "orange(3)"
-}
-DEF ORANGE Orange {
-  translation 0.38 -0.12 0.79
-  name "orange(1)"
 }
 Solid {
   translation 0 0 2.7
@@ -70,8 +39,14 @@ Solid {
     Robot {
       translation 0 0 -0.09
       children [
+        Emitter {
+          channel 1
+        }
         Camera {
           rotation 0 1 0 1.5707963267948968
+          recognitionColors [
+            0.898039 0.647059 0.0392157
+          ]
           fieldOfView 1
           width 300
           height 300
@@ -103,22 +78,21 @@ Floor {
     colorOverride 0 1 1
   }
 }
-RubberDuck {
-  translation -0.14 0.38 0.79
-}
-Wineglass {
-  translation -0.38 -0.38 0.75
-}
-Pioneer2 {
-  translation 0 -3.61 0
-  controller "<none>"
+Orange {
+  translation 0.12 -0.12 0.79
 }
 DEF ARM1 UR5e {
   translation 0 -0.77 0.75
   rotation 0 0 -0.9999999999999999 0
-  controller "death_warrant"
+  controller "ur5e_pick_place"
+  controllerArgs [
+    "1"
+  ]
   supervisor TRUE
   toolSlot [
+    Receiver {
+      channel 1
+    }
     DistanceSensor {
     }
     Robotiq3fGripper {
@@ -129,16 +103,18 @@ DEF ARM2 UR5e {
   translation 0 0.77 0.75
   rotation 0 0 -0.9999999999999999 3.141592653589793
   name "UR5e(1)"
-  controller "death_warrant"
+  controller "ur5e_pick_place"
+  controllerArgs [
+    "2"
+  ]
   supervisor TRUE
   toolSlot [
+    Receiver {
+      channel 2
+    }
     DistanceSensor {
     }
     Robotiq3fGripper {
     }
   ]
-}
-SoccerBall {
-  translation -0.38 0.38 0.82
-  radius 0.054
 }
