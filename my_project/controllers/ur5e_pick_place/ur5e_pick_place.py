@@ -4,6 +4,7 @@
 #  from controller import Robot, Motor, DistanceSensor
 from controller import Robot
 import sys
+import struct
 
 CHANNEL = int(sys.argv[1])
 x = 0
@@ -101,9 +102,10 @@ while robot.step(timestep) != -1:
         elif state == 'waiting':
             queue_len = receiver.getQueueLength()
             if queue_len > 0:
-                data = receiver.getBytes()                
-                set_arm_pos(grid[(y,x)])
-                print(receiver.getChannel())
+                data = receiver.getBytes() 
+                arm_pos = struct.unpack('dd', data)
+                print(arm_pos)                    
+                set_arm_pos(grid[arm_pos])
                 counter = 90
                 state = 'grasping'
         elif state == 'grasping': 
