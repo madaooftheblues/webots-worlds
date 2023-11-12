@@ -6,6 +6,8 @@ from controller import Robot
 import sys
 
 CHANNEL = int(sys.argv[1])
+x = 0
+y = 0
 
 # create the Robot instance.
 robot = Robot()
@@ -88,14 +90,13 @@ def release():
         motor.setPosition(motor.getMinPosition())
 
 reset_arm_pos()
-x = 0
-y = 0
+
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
 while robot.step(timestep) != -1:
     if counter <= 0:
         if state == 'testing':
-            pos = [0.95, -1.55, 2.185, -2.1, -1.6, 1.9]
+            pos = [0.95, 1.55, 0, -2.1, -1.6, 1.9]
             set_arm_pos(pos)
         elif state == 'waiting':
             queue_len = receiver.getQueueLength()
