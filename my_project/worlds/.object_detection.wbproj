@@ -4,6 +4,8 @@ simulationViewPerspectives: 000000ff000000010000000200000100000002ee010000000201
 sceneTreePerspectives: 000000ff00000001000000030000001c00000063000000fa0100000002010000000200
 maximizedDockId: -1
 centralWidgetVisible: 1
+projectionMode: PERSPECTIVE
+renderingMode: PLAIN
 orthographicViewHeight: 1
 textFiles: 1 "controllers/supervisor_cam_controller/supervisor_cam_controller.py" "controllers/ur5e_pick_place/ur5e_pick_place.py"
 consoles: Console:All:All

@@ -25,7 +25,7 @@ speed = 1.0
 counter = 90
 # initial_positions = [0, -1.5, 1.5, 0, 0, 0]
 initial_positions = [1.3, -2.2, 2.0, -1.4, -1.6, 1.3]
-target_positions = [0, -1.88, -2.14, -2.38, -1.51, 0]
+target_positions = [0, -1.88, -1.8, -2.38, -1.51, 0]
 
 # map = {
 #    1: [0, 0, 0, 0, 0, 0],
@@ -118,6 +118,7 @@ while robot.step(timestep) != -1:
                 state = 'releasing'
         elif state == 'releasing':
                 release()
+                counter = 90
                 state = 'reset'
         elif state == 'reset':
                 reset_arm_pos()

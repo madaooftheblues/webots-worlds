@@ -14,44 +14,68 @@ import math
 # create the Robot instance.
 robot = Supervisor()
 emitter = robot.getDevice('emitter')
+object = "RubberDuck"
 radius = 0.054
-mass = 0.6
 # Get the time step of the current world (simulation)
 time_step = int(robot.getBasicTimeStep())
 object_coords = {
     "Orange": [0.12, -0.12, 0.79],
-    "Apple": [-0.37, 0.37, 0.79],
-    "Wineglass": [-0.12, 0.12, 0.79],
+    "Wineglass": [-0.12, 0.37, 0.79],
+    "Apple": [0.37, 0.12, 0.79],
     "RubberDuck": [-0.12, 0.12, 0.79],
-    "SoccerBall": [0.12, 0.37, 0.81]
+    "SoccerBall": [0.37, 0.37, 0.81]
 }
 
 object_poses = {
     "Orange": (1,1),
-    "Apple": (0,0),
-    "Wineglass": (1,1),
-    "RubberDuck": (0,3),
-    "SoccerBall": (0,2)
+    "Wineglass": (0,1),
+    "Apple": (1,3),
+    "RubberDuck": (1,1),
+    "SoccerBall": (0,3)
 }
 
-object = "Orange"
-
-arm_1 = robot.getFromDef('ARM1')
-arm_2 = robot.getFromDef('ARM2')
-
-arm_1_coords = arm_1.getPosition()
-arm_2_coords = arm_2.getPosition()
-dist_1 = math.dist(object_coords[object], arm_1_coords)
-dist_2 = math.dist(object_coords[object], arm_2_coords)
-
+# Spawn object
 root_node = robot.getRoot()
 children_field = root_node.getField('children')
 children_field.importMFNodeFromString(-1, f'{object}{{ translation {object_coords[object][0]} {object_coords[object][1]} {object_coords[object][2]} }}')
 
-emitter.setChannel(1)
+# Configure soccerball radius
+if object == 'SoccerBall':
+    # Get the root node of the scene
+    root_node = robot.getRoot()
+    root_children = root_node.getField('children')
+    num_of_nodes = root_children.getCount()
+    soccer_node = None
+    for i in range(num_of_nodes):
+        node = root_children.getMFNode(i)
+        name = node.getTypeName()
+        print(name)
+        if name == "SoccerBall":
+            soccer_node = node
+            break;
+    soccer_node.getField("radius").setSFFloat(radius)
+       
+# Distance calculator
+def measure_dist(p1, p2):
+    return math.dist(p1,p2)
+
+# Choose which robot arm is to pick
+def choose_robot():
+    arm_1 = robot.getFromDef('ARM1')
+    arm_2 = robot.getFromDef('ARM2')
+    
+    arm_1_coords = arm_1.getPosition()
+    arm_2_coords = arm_2.getPosition()
+    dist_1 = measure_dist(object_coords[object], arm_1_coords)
+    dist_2 = measure_dist(object_coords[object], arm_2_coords)
+    
+    if dist_1 <= dist_2: return 1
+    return 2
+
+# Set emitter channel
+emitter.setChannel(choose_robot())
 message = struct.pack("dd",object_poses[object][0], object_poses[object][1])
 emitter.send(message)
-print(emitter.getChannel())
 """
 def get_world_info():
     # Get the root node of the scene

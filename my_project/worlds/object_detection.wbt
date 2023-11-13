@@ -9,13 +9,19 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/Parquetry.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/Floor.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Ceiling.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/fruits/protos/Orange.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/fruits/protos/Orange.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/fruits/protos/Apple.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/kitchen/utensils/protos/Wineglass.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/toys/protos/RubberDuck.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/balls/protos/SoccerBall.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/tables/protos/Desk.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/fruits/protos/FruitBowl.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.03595324209247011 -0.9993411288104213 -0.0049671572305734395 5.141568702270474
-  position -2.379890292859521 0.2517788581633025 5.522404934558256
+  orientation -0.6551463073087852 -0.09936031708500015 0.748939812941221 3.322417593343902
+  position 0.8974189713348142 -0.32509988423069136 7.443155049068503
 }
 TexturedBackground {
 }
@@ -33,6 +39,20 @@ Ceiling {
 }
 Table {
 }
+Desk {
+  translation -0.88 -0.29 0
+}
+FruitBowl {
+  translation -0.81 -0.66 0.77
+  name "fruit bowl(1)"
+}
+Desk {
+  translation 0.88 0.33 0
+  name "desk(1)"
+}
+FruitBowl {
+  translation 0.81 0.65 0.77
+}
 Solid {
   translation 0 0 2.7
   children [
@@ -40,7 +60,7 @@ Solid {
       translation 0 0 -0.09
       children [
         Emitter {
-          channel 1
+          channel 2
         }
         Camera {
           rotation 0 1 0 1.5707963267948968
@@ -77,9 +97,6 @@ Floor {
     type "chequered"
     colorOverride 0 1 1
   }
-}
-Orange {
-  translation 0.12 -0.12 0.79
 }
 DEF ARM1 UR5e {
   translation 0 -0.77 0.75
