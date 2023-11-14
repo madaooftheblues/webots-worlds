@@ -68,11 +68,11 @@ for motor in arm_motors:
 for motor in hand_motors:
     motor.setVelocity(speed)
 
-distance_sensor = robot.getDevice("distance sensor")
-distance_sensor.enable(timestep)
+# distance_sensor = robot.getDevice("distance sensor")
+# distance_sensor.enable(timestep)
 
-position_sensor = robot.getDevice("wrist_1_joint_sensor")
-position_sensor.enable(timestep)
+# position_sensor = robot.getDevice("wrist_1_joint_sensor")
+# position_sensor.enable(timestep)
 
 def set_arm_pos(pos):
     for i, motor in enumerate(arm_motors):

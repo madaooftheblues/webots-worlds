@@ -14,7 +14,7 @@ import math
 # create the Robot instance.
 robot = Supervisor()
 emitter = robot.getDevice('emitter')
-object = "RubberDuck"
+object = "SoccerBall"
 radius = 0.054
 # Get the time step of the current world (simulation)
 time_step = int(robot.getBasicTimeStep())
@@ -36,13 +36,12 @@ object_poses = {
 
 # Spawn object
 root_node = robot.getRoot()
-children_field = root_node.getField('children')
-children_field.importMFNodeFromString(-1, f'{object}{{ translation {object_coords[object][0]} {object_coords[object][1]} {object_coords[object][2]} }}')
+root_children = root_node.getField('children')
+root_children.importMFNodeFromString(-1, f'{object}{{ translation {object_coords[object][0]} {object_coords[object][1]} {object_coords[object][2]} }}')
 
 # Configure soccerball radius
 if object == 'SoccerBall':
     # Get the root node of the scene
-    root_node = robot.getRoot()
     root_children = root_node.getField('children')
     num_of_nodes = root_children.getCount()
     soccer_node = None
@@ -136,8 +135,7 @@ camera.enable(time_step)
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
 while robot.step(time_step) != -1:
-    message = struct.pack("hd",45,120.08)
-    emitter.send(message)
+
     # Read the sensors:
     # Enter here functions to read sensor data, like:
     #  val = ds.getValue()
