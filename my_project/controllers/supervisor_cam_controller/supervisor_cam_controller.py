@@ -8,8 +8,27 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import uvicorn
+from pydantic import BaseModel
 import struct
 import math
+from control import Control 
+
+# message from frontend 
+class Message_(BaseModel):
+    message: str
+
+class Message:
+    def __init__(self):
+        self.message = ''
+    def set_message(self, message: str):
+        self.message = message
+    def get_message(self):
+        return self.message
+
+m = Message()
+
+# simulation controls
+control = Control()
 
 # create the Robot instance.
 robot = Supervisor()
@@ -35,10 +54,17 @@ object_poses = {
 }
 
 # Spawn object
+"""
 root_node = robot.getRoot()
 root_children = root_node.getField('children')
 root_children.importMFNodeFromString(-1, f'{object}{{ translation {object_coords[object][0]} {object_coords[object][1]} {object_coords[object][2]} }}')
 
+"""
+root_node = robot.getRoot()
+root_children = root_node.getField('children')
+for obj, coords in object_coords.items():
+    root_children.importMFNodeFromString(-1, f'{obj}{{ translation {coords[0]} {coords[1]} {coords[2]} }}')
+    
 # Configure soccerball radius
 if object == 'SoccerBall':
     # Get the root node of the scene
@@ -75,6 +101,7 @@ def choose_robot():
 emitter.setChannel(choose_robot())
 message = struct.pack("dd",object_poses[object][0], object_poses[object][1])
 emitter.send(message)
+
 """
 def get_world_info():
     # Get the root node of the scene
@@ -93,6 +120,7 @@ def get_world_info():
             robot_nodes.append(name)
     print(robot_nodes) 
     # return {"robots": robots, "objects": objects}
+"""
 
 # Create a FastAPI app
 app = FastAPI()
@@ -105,25 +133,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/webots/play")
-async def play_simulation():
-    robot.simulationSetMode(robot.SIMULATION_MODE_FAST)
-    robot.step(time_step)
-    return {"message" : "Simulation started"}
-@app.post("/webots/pause")
-async def pause_simulation():
-    robot.simulationSetMode(robot.SIMULATION_MODE_PAUSE)
-    robot.step(0)
-    return {"message" : "Simulation stopped"}
+API_URL = "0.0.0.0"
+PORT = 8000
+base_route = '/webots/'
+
+@app.post(base_route)
+async def receive_message(m_obj: Message_):
+    m.set_message(m_obj.message)
+    return {"message" : m_obj.message}
+
+@app.post(base_route + 'control')
+async def receive_control(c_obj: Message_):
+    control.set_mode(c_obj.message)
+    return {"message" : c_obj.message}
 
 # Function to start the FastAPI server
 def start_fastapi_server():
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host = API_URL, port = PORT)
 
 # Start the FastAPI server in a separate thread
 fastapi_server_thread = threading.Thread(target=start_fastapi_server)
 fastapi_server_thread.start()
-"""
 
 # You should insert a getDevice-like function in order to get the
 # instance of a device of the robot. Something like:
@@ -132,18 +162,10 @@ fastapi_server_thread.start()
 #  ds.enable(timestep)
 camera = robot.getDevice("camera")
 camera.enable(time_step)
+
 # Main loop:
-# - perform simulation steps until Webots is stopping the controller
-while robot.step(time_step) != -1:
-
-    # Read the sensors:
-    # Enter here functions to read sensor data, like:
-    #  val = ds.getValue()
-
-    # Process sensor data here.
-
-    # Enter here functions to send actuator commands, like:
-    #  motor.setPosition(10.0)
-    pass
-
+if __name__ == '__main__':
+    while True:
+        control.monitor(robot, time_step)
+        
 # Enter here exit cleanup code.
