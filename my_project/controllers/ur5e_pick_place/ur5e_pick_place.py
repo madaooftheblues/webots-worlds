@@ -104,6 +104,7 @@ while robot.step(timestep) != -1:
             if queue_len > 0:
                 data = receiver.getBytes() 
                 arm_pos = struct.unpack('dd', data)
+                receiver.nextPacket()
                 print(arm_pos)                    
                 set_arm_pos(grid[arm_pos])
                 counter = 90
