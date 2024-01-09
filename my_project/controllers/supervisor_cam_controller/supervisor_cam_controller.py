@@ -13,6 +13,7 @@ import struct
 import math
 from control import Control 
 from task import TaskManager, PickPlace 
+from world import Artifact, Grid
 
 # message from frontend 
 class Message_(BaseModel):
@@ -45,71 +46,30 @@ emitter = robot.getDevice('emitter')
 # Get the time step of the current world (simulation)
 time_step = int(robot.getBasicTimeStep())
 
-class Artifact:
-    def __init__(self, name, coord, pose):
-        self.name = name
-        self.coord = coord
-        self.pose = pose
+grid = Grid()
 
-    def get_name(self):
-        return self.name
+grid.add_artifact( Artifact("Orange", [0.12, -0.12, 0.79], (1, 1)) )
+grid.add_artifact( Artifact("Wineglass", [-0.12, 0.37, 0.79], (0, 1)) )
+grid.add_artifact( Artifact("Apple", [0.37, 0.12, 0.79], (1, 3)) )
+grid.add_artifact( Artifact("RubberDuck", [-0.12, 0.12, 0.79], (1, 1)) )
+grid.add_artifact( Artifact("SoccerBall", [0.37, 0.37, 0.81], (0, 3)) )
 
-    def get_pose(self):
-        return self.pose
-
-    def get_coord(self):
-        return self.coord
-
-    def set_name(self, name: str):
-        self.name = name
-
-    def set_pose(self, pose):
-        self.pose = pose
-
-    def set_coord(self, coord: list):
-        self.coord = coord
-
-class Grid:
-    def __init__(self):
-        self.artifacts = []
-
-    def add_artifact(self, artifact: Artifact):
-        self.articats.append(artifact)
-
-    def remove_artifact(self, name):
-        for i, art in enumarate(self.artifacts):
-            if art.name == name:
-                self.artifacts.pop(i)
-
-    def clear_artifacts(self):
-        self.artifacts.clear()
-
-
-object_coords = {
-    "Orange": [0.12, -0.12, 0.79],
-    "Wineglass": [-0.12, 0.37, 0.79],
-    "Apple": [0.37, 0.12, 0.79],
-    "RubberDuck": [-0.12, 0.12, 0.79],
-    "SoccerBall": [0.37, 0.37, 0.81]
-}
-
-object_poses = {
-    "Orange": (1,1),
-    "Wineglass": (0,1),
-    "Apple": (1,3),
-    "RubberDuck": (1,1),
-    "SoccerBall": (0,3)
-}
+grid.print_artifacts()
 
 # Spawn object
 root_node = robot.getRoot()
 root_children = root_node.getField('children')
 
-for obj, coords in object_coords.items():
-    root_children.importMFNodeFromString(-1, f'{obj}{{ translation {coords[0]} {coords[1]} {coords[2]} }}')
+artifacts = grid.get_artifacts()
+
+for art in artifacts:
+    name = art.get_name()
+    coord = art.get_coord()
+
+    root_children.importMFNodeFromString(-1, f'{name}{{ translation {coord[0]} {coord[1]} {coord[2]} }}')
 
     # Configure soccerball radius
-    if obj  == 'SoccerBall':
+    if name  == 'SoccerBall':
         num_of_nodes = root_children.getCount()
         soccer_node = None
         radius = 0.054

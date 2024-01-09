@@ -1,5 +1,5 @@
 from controller import Supervisor
-
+ 
 class Artifact:
     def __init__(self, name, coord, pose):
         self.name = name
@@ -28,8 +28,11 @@ class Grid:
     def __init__(self):
         self.artifacts = []
 
+    def get_artifacts(self):
+        return self.artifacts
+
     def add_artifact(self, artifact: Artifact):
-        self.articats.append(artifact)
+        self.artifacts.append(artifact)
 
     def remove_artifact(self, name):
         for i, art in enumarate(self.artifacts):
@@ -39,4 +42,6 @@ class Grid:
     def clear_artifacts(self):
         self.artifacts.clear()
 
-
+    def print_artifacts(self):
+        for art in self.artifacts:
+            print(art.name, art.coord, art.pose)
