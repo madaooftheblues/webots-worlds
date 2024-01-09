@@ -1,6 +1,9 @@
 from controller import Supervisor
 from abc import ABC, abstractmethod
 from queue import Queue
+from world import Artifact
+import math
+import struct
 
 class Operation:
     @abstractmethod
@@ -8,7 +11,7 @@ class Operation:
         pass
 
 class PickPlace(Operation):
-    def __init__(self, target: str):
+    def __init__(self, target: Artifact):
         self.target = target
 
     def set_target(self, target):
@@ -23,21 +26,22 @@ class PickPlace(Operation):
             return math.dist(p1,p2)
 
         # Choose which robot arm is to pick
-        def choose_robot():
+        def choose_robot(self, coord: list):
             arm_1 = supervisor.getFromDef('ARM1')
             arm_2 = supervisor.getFromDef('ARM2')
             
-            arm_1_coords = arm_1.getPosition()
-            arm_2_coords = arm_2.getPosition()
-            dist_1 = measure_dist(object_coords[object], arm_1_coords)
-            dist_2 = measure_dist(object_coords[object], arm_2_coords)
+            arm_1_coord = arm_1.getPosition()
+            arm_2_coord = arm_2.getPosition()
+            dist_1 = measure_dist(self.target.coord, arm_1_coord)
+            dist_2 = measure_dist(self.target.coord, arm_2_coord)
             
             if dist_1 <= dist_2: return 1
             return 2
 
         # Set emitter channel
-        emitter.setChannel(choose_robot())
-        coordinates = struct.pack("dd", object_poses[target][0], object_poses[target][1])
+        emitter = supervisor.getDevice('emitter')
+        emitter.setChannel(choose_robot(self, self.target.coord))
+        coordinates = struct.pack("dd", self.target.pose[0], self.target.pose[1])
         emitter.send(coordinates)
 
 class Task:

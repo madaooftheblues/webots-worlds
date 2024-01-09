@@ -12,7 +12,7 @@ from pydantic import BaseModel
 import struct
 import math
 from control import Control 
-from task import TaskManager, PickPlace 
+from task import Task, TaskManager, PickPlace 
 from world import Artifact, Grid
 
 # message from frontend 
@@ -61,6 +61,10 @@ root_node = robot.getRoot()
 root_children = root_node.getField('children')
 
 artifacts = grid.get_artifacts()
+
+operation = PickPlace(artifacts[2])
+t = Task("Pick apple", operation) 
+t.execute(robot)
 
 for art in artifacts:
     name = art.get_name()
