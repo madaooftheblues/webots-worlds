@@ -9,8 +9,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import uvicorn
 from pydantic import BaseModel
-import struct
-import math
 from control import Control 
 from task import Task, TaskManager, PickPlace 
 from world import Artifact, Grid
@@ -46,13 +44,17 @@ emitter = robot.getDevice('emitter')
 # Get the time step of the current world (simulation)
 time_step = int(robot.getBasicTimeStep())
 
+# enable camera device
+camera = robot.getDevice('camera')
+camera.enable(time_step)
+
 grid = Grid()
 
 grid.add_artifact( Artifact("Orange", [0.12, -0.12, 0.79], (1, 1)) )
-grid.add_artifact( Artifact("Wineglass", [-0.12, 0.37, 0.79], (0, 1)) )
 grid.add_artifact( Artifact("Apple", [0.37, 0.12, 0.79], (1, 3)) )
 grid.add_artifact( Artifact("RubberDuck", [-0.12, 0.12, 0.79], (1, 1)) )
 grid.add_artifact( Artifact("SoccerBall", [0.37, 0.37, 0.81], (0, 3)) )
+grid.add_artifact( Artifact("Wineglass", [-0.12, 0.37, 0.79], (0, 1)) )
 
 grid.print_artifacts()
 
@@ -61,10 +63,6 @@ root_node = robot.getRoot()
 root_children = root_node.getField('children')
 
 artifacts = grid.get_artifacts()
-
-operation = PickPlace(artifacts[2])
-t = Task("Pick apple", operation) 
-t.execute(robot)
 
 for art in artifacts:
     name = art.get_name()
@@ -85,53 +83,6 @@ for art in artifacts:
                 soccer_node = node
                 break;
         soccer_node.getField("radius").setSFFloat(radius)
-    
-
-# pick and place task function
-def pick_place(target:str):
-
-    # Distance calculator
-    def measure_dist(p1, p2):
-        return math.dist(p1,p2)
-
-    # Choose which robot arm is to pick
-    def choose_robot():
-        arm_1 = robot.getFromDef('ARM1')
-        arm_2 = robot.getFromDef('ARM2')
-        
-        arm_1_coords = arm_1.getPosition()
-        arm_2_coords = arm_2.getPosition()
-        dist_1 = measure_dist(object_coords[object], arm_1_coords)
-        dist_2 = measure_dist(object_coords[object], arm_2_coords)
-        
-        if dist_1 <= dist_2: return 1
-        return 2
-
-    # Set emitter channel
-    emitter.setChannel(choose_robot())
-    coordinates = struct.pack("dd", object_poses[target][0], object_poses[target][1])
-    emitter.send(coordinates)
-
-
-"""
-def get_world_info():
-    # Get the root node of the scene
-    root_node = robot.getRoot()
-    root_children = root_node.getField('children')
-    num_of_nodes = root_children.getCount()
-    print(num_of_nodes)
-    robot_nodes = []
-    for i in range(num_of_nodes):
-        node = root_children.getMFNode(i)
-        type = node.getType()
-        name = node.getTypeName()
-        print(name, type)
-        if type == Node.ROBOT:
-            print(node.getPosition())
-            robot_nodes.append(name)
-    print(robot_nodes) 
-    # return {"robots": robots, "objects": objects}
-"""
 
 # Create a FastAPI app
 app = FastAPI()
@@ -177,17 +128,18 @@ def start_fastapi_server():
 fastapi_server_thread = threading.Thread(target=start_fastapi_server)
 fastapi_server_thread.start()
 
-# You should insert a getDevice-like function in order to get the
-# instance of a device of the robot. Something like:
-#  motor = robot.getDevice('motorname')
-#  ds = robot.getDevice('dsname')
-#  ds.enable(timestep)
-camera = robot.getDevice("camera")
-camera.enable(time_step)
-
+count = 0
 # Main loop:
 if __name__ == '__main__':
     while True:
         control.monitor(robot, time_step)
+        if count == 0:
+            count += 1
+            for art in artifacts:
+                operation = PickPlace(art)
+                t = Task("Pick", operation) 
+                t.execute(robot)
+
+
         
 # Enter here exit cleanup code.

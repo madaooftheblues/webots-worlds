@@ -4,6 +4,7 @@ from queue import Queue
 from world import Artifact
 import math
 import struct
+from object_detection import detect
 
 class Operation:
     @abstractmethod
@@ -38,7 +39,9 @@ class PickPlace(Operation):
             if dist_1 <= dist_2: return 1
             return 2
 
-        # Set emitter channel
+
+        # Set emitter channe
+        if not detect(self.target.name, supervisor): return
         emitter = supervisor.getDevice('emitter')
         emitter.setChannel(choose_robot(self, self.target.coord))
         coordinates = struct.pack("dd", self.target.pose[0], self.target.pose[1])
