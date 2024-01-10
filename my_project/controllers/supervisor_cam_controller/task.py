@@ -22,11 +22,11 @@ class PickPlace(Operation):
         return self.target
 
     def perform(self, supervisor: Supervisor):
-        # Distance calculator
+        # distance calculator
         def measure_dist(p1, p2):
             return math.dist(p1,p2)
 
-        # Choose which robot arm is to pick
+        # choose which robot arm is to pick
         def choose_robot(self, coord: list):
             arm_1 = supervisor.getFromDef('ARM1')
             arm_2 = supervisor.getFromDef('ARM2')
@@ -40,7 +40,7 @@ class PickPlace(Operation):
             return 2
 
 
-        # Set emitter channe
+        # set emitter channe
         if not detect(self.target.name, supervisor): return
         emitter = supervisor.getDevice('emitter')
         emitter.setChannel(choose_robot(self, self.target.coord))

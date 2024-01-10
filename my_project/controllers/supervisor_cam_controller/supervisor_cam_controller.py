@@ -1,7 +1,5 @@
 """supervisor_cam_controller controller."""
 
-# You may need to import some classes of the controller module. Ex:
-#  from controller import Robot, Motor, DistanceSensor
 from controller import Supervisor, Node, Camera
 import threading
 from fastapi import FastAPI
@@ -41,7 +39,7 @@ task_manager = TaskManager()
 # create the Robot instance.
 robot = Supervisor()
 emitter = robot.getDevice('emitter')
-# Get the time step of the current world (simulation)
+# get the time step of the current world (simulation)
 time_step = int(robot.getBasicTimeStep())
 
 # enable camera device
@@ -58,7 +56,7 @@ grid.add_artifact( Artifact("Wineglass", [-0.12, 0.37, 0.79], (0, 1)) )
 
 grid.print_artifacts()
 
-# Spawn object
+# spawn object
 root_node = robot.getRoot()
 root_children = root_node.getField('children')
 
@@ -70,7 +68,7 @@ for art in artifacts:
 
     root_children.importMFNodeFromString(-1, f'{name}{{ translation {coord[0]} {coord[1]} {coord[2]} }}')
 
-    # Configure soccerball radius
+    # configure soccerball radius
     if name  == 'SoccerBall':
         num_of_nodes = root_children.getCount()
         soccer_node = None
@@ -84,7 +82,7 @@ for art in artifacts:
                 break;
         soccer_node.getField("radius").setSFFloat(radius)
 
-# Create a FastAPI app
+# create a FastAPI app
 app = FastAPI()
 
 app.add_middleware(
@@ -120,16 +118,16 @@ async def receive_task(t_obj: Task_):
 
     return {"message" : t_obj.message}
 
-# Function to start the FastAPI server
+# function to start the FastAPI server
 def start_fastapi_server():
     uvicorn.run(app, host = API_URL, port = PORT)
 
-# Start the FastAPI server in a separate thread
+# start the FastAPI server in a separate thread
 fastapi_server_thread = threading.Thread(target=start_fastapi_server)
 fastapi_server_thread.start()
 
 count = 0
-# Main loop:
+# main loop:
 if __name__ == '__main__':
     while True:
         control.monitor(robot, time_step)
@@ -140,6 +138,4 @@ if __name__ == '__main__':
                 t = Task("Pick", operation) 
                 t.execute(robot)
 
-
-        
 # Enter here exit cleanup code.
