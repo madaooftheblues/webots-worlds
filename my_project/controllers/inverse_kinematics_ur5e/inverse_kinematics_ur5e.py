@@ -40,7 +40,7 @@ my_chain = Chain.from_urdf_file(filename, base_elements=base_elements, active_li
 
 
 # Get the arm and target nodes.
-target = robot.getFromDef('WINEGLASS')
+target = robot.getFromDef('CAN')
 
 arm = robot.getSelf()
 
@@ -49,7 +49,7 @@ arm_motor_names = ["shoulder_pan_joint","shoulder_lift_joint", "elbow_joint", "w
 arm_motors = [robot.getDevice(name) for name in arm_motor_names]
 
 for motor in arm_motors:
-        motor.setVelocity(0.5)
+        motor.setVelocity(1)
         position_sensor = motor.getPositionSensor()
         position_sensor.enable(timeStep)
 
@@ -58,7 +58,7 @@ hand_motors = [robot.getDevice(name) for name in hand_motor_names]
 
 # Get hand motors
 for motor in hand_motors:
-        motor.setVelocity(0.5)
+        motor.setVelocity(1)
         position_sensor = motor.getPositionSensor()
         position_sensor.enable(timeStep)
 

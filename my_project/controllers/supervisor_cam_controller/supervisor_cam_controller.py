@@ -9,7 +9,8 @@ import uvicorn
 from pydantic import BaseModel
 from control import Control 
 from task import Task, TaskManager, PickPlace 
-from world import Artifact, Grid
+from world import Artifact, Grid, World
+import uuid
 
 # message from frontend 
 class Message_(BaseModel):
@@ -25,10 +26,18 @@ class Message:
 
 m = Message()
 
+# robot prototype
+class Robot_(BaseModel):
+    id: str
+    name: str
+    position: list
+
 # task prototype
 class Task_(BaseModel):
-    title: str
+    id: str
+    name: str
     operation: str
+    target: str
     
 # simulation controls
 control = Control()
@@ -42,25 +51,33 @@ emitter = robot.getDevice('emitter')
 # get the time step of the current world (simulation)
 time_step = int(robot.getBasicTimeStep())
 
+# world info
+world = World(robot)
+
 # enable camera device
 camera = robot.getDevice('camera')
 camera.enable(time_step)
 
 grid = Grid()
 
-grid.add_artifact( Artifact("Orange", [0.12, -0.12, 0.79], (1, 1)) )
-grid.add_artifact( Artifact("Apple", [0.37, 0.12, 0.79], (1, 3)) )
-grid.add_artifact( Artifact("RubberDuck", [-0.12, 0.12, 0.79], (1, 1)) )
-grid.add_artifact( Artifact("SoccerBall", [0.37, 0.37, 0.81], (0, 3)) )
-grid.add_artifact( Artifact("Wineglass", [-0.12, 0.37, 0.79], (0, 1)) )
+grid.add_artifact( Artifact("Orange", [0.12, -0.12, 1.79], (1, 1)) )
+grid.add_artifact( Artifact("Apple", [0.37, 0.12, 1.79], (1, 3)) )
+grid.add_artifact( Artifact("RubberDuck", [-0.12, 0.12, 1.79], (1, 1)) )
+grid.add_artifact( Artifact("SoccerBall", [0.37, 0.37, 1.81], (0, 3)) )
+grid.add_artifact( Artifact("Wineglass", [-0.12, 0.37, 1.79], (0, 1)) )
 
 grid.print_artifacts()
 
-# spawn object
+# spawn objects
 root_node = robot.getRoot()
 root_children = root_node.getField('children')
 
 artifacts = grid.get_artifacts()
+
+n = world.get_nodes_by_type('Robot')
+for node in n:
+    print(node.getTypeName())
+
 
 for art in artifacts:
     name = art.get_name()
@@ -97,6 +114,20 @@ API_URL = "0.0.0.0"
 PORT = 8000
 base_route = '/webots/'
 
+def generate_unique_id():
+    return str(uuid.uuid4())
+
+@app.get(base_route + 'robots')
+async def send_robots() -> list[Robot_]:
+    r_nodes = world.get_nodes_by_type('Robot')
+    robots_list = []
+    for r in r_nodes:
+        name = r.getTypeName()
+        position = [round(p, 1) for p in r.getPosition()] 
+        id = generate_unique_id()
+        robots_list.append(Robot_(id = id, name = name, position = position))
+    return robots_list
+
 @app.post(base_route)
 async def receive_message(m_obj: Message_):
     m.set_message(m_obj.message)
@@ -107,16 +138,39 @@ async def receive_control(c_obj: Message_):
     control.set_mode(c_obj.message)
     return {"message" : c_obj.message}
 
-@app.post(base_route + 'task')
+@app.get(base_route + 'tasks')
+async def send_tasks() -> list[Task_]:
+    if task_manager.is_empty(): 
+        return []
+    tasks = task_manager.get_tasks()
+    tasks[:] = [
+            Task_(
+                id = t.id,
+                name = t.name,
+                operation = 'PickPlace' if type(t.operation) == PickPlace else '',
+                target = t.target.name
+                )
+            for t in tasks
+            ]
+    return tasks
+
+@app.post(base_route + 'tasks')
 async def receive_task(t_obj: Task_):
-    op = t_object.operation
+    op = t_obj.operation
 
     match op:
         case 'PickPlace':
-            t = PickPlace(t_obj.title, t_obj.operation, t_obj.target)
-            task_manager.addTask(t)
+            art = grid.get_artifact(t_obj.target)
+            operation = PickPlace(art)
+            t = Task(t_obj.id, t_obj.name, operation) 
+            task_manager.add_task(t)
 
-    return {"message" : t_obj.message}
+    return t_obj
+
+@app.delete(base_route + 'tasks/{task_id}')
+def delete_task(task_id: str):
+    task_manager.remove_task(task_id)
+    return {"message": "Task deleted"}
 
 # function to start the FastAPI server
 def start_fastapi_server():
@@ -126,16 +180,12 @@ def start_fastapi_server():
 fastapi_server_thread = threading.Thread(target=start_fastapi_server)
 fastapi_server_thread.start()
 
-count = 0
 # main loop:
 if __name__ == '__main__':
     while True:
         control.monitor(robot, time_step)
-        if count == 0:
-            count += 1
-            for art in artifacts:
-                operation = PickPlace(art)
-                t = Task("Pick", operation) 
-                t.execute(robot)
+        if not task_manager.is_empty():
+            t = task_manager.get_task()
+            t.execute(robot)
 
 # Enter here exit cleanup code.

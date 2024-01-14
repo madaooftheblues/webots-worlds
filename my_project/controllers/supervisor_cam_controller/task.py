@@ -1,10 +1,9 @@
 from controller import Supervisor
 from abc import ABC, abstractmethod
-from queue import Queue
 from world import Artifact
 import math
 import struct
-from object_detection import detect
+# from object_detection import detect
 
 class Operation:
     @abstractmethod
@@ -41,15 +40,16 @@ class PickPlace(Operation):
 
 
         # set emitter channe
-        if not detect(self.target.name, supervisor): return
+        # if not detect(self.target.name, supervisor): return
         emitter = supervisor.getDevice('emitter')
         emitter.setChannel(choose_robot(self, self.target.coord))
         coordinates = struct.pack("dd", self.target.pose[0], self.target.pose[1])
         emitter.send(coordinates)
 
 class Task:
-    def __init__(self, title, operation):
-        self.title = title
+    def __init__(self, id, name, operation):
+        self.id = id
+        self.name = name
         self.operation = operation
 
     def set_title(self, title):
@@ -64,10 +64,23 @@ class Task:
 
 class TaskManager:
     def __init__(self):
-        self.queue = Queue(maxsize = 20)
+        self.queue = []
     
     def add_task(self, task: Task):
-        self.queue.put_nowait(task)
-    
+        self.queue.append(task)
+
+    def get_tasks(self):
+        return self.queue
+
     def get_task(self):
-        return self.queue.get_nowait()
+        if not self.is_empty():
+            return self.queue.pop(0)
+
+    def remove_task(self, task_id):
+        self.queue[:] = [task for task in self.queue if task.id != task_id]
+
+    def get_queue_len(self):
+        return len(self.queue)
+
+    def is_empty(self):
+        return len(self.queue) == 0
