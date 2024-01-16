@@ -63,6 +63,15 @@ class Task:
     def get_title(self):
         return self.title
 
+    def get_operation(self):
+        return self.operation
+
+    def get_id(self):
+        return self.id
+
+    def get_name(self):
+        return self.name
+
     def execute(self, supervisor: Supervisor):
         self.operation.perform(supervisor)
         pass

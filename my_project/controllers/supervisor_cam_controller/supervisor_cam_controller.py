@@ -11,6 +11,7 @@ from control import Control
 from task import Task, TaskManager, PickPlace 
 from world import Artifact, Grid, World
 import uuid
+import struct
 
 # message from frontend 
 class Message_(BaseModel):
@@ -45,12 +46,17 @@ control = Control()
 # task manager
 task_manager = TaskManager()
 
+# task pending?
+task_pending = False
+
 # create the Robot instance.
 robot = Supervisor()
 emitter = robot.getDevice('emitter')
+receiver = robot.getDevice('receiver')
 # get the time step of the current world (simulation)
 time_step = int(robot.getBasicTimeStep())
 
+receiver.enable(time_step)
 # world info
 world = World(robot)
 
@@ -143,16 +149,15 @@ async def send_tasks() -> list[Task_]:
     if task_manager.is_empty(): 
         return []
     tasks = task_manager.get_tasks()
-    tasks[:] = [
-            Task_(
-                id = t.id,
-                name = t.name,
-                operation = 'PickPlace' if type(t.operation) == PickPlace else '',
-                target = t.target.name
-                )
-            for t in tasks
-            ]
-    return tasks
+    t_ = []
+    for t in tasks:
+        tid = t.get_id()
+        tname = t.get_name()
+        top = 'PickPlace' if type(t.get_operation()) == PickPlace else ''
+        ttarget = t.get_operation().get_target().get_name()
+        t_.append(Task_(id = tid, name = tname, operation = top, target = ttarget))
+
+    return t_
 
 @app.post(base_route + 'tasks')
 async def receive_task(t_obj: Task_):
@@ -184,8 +189,18 @@ fastapi_server_thread.start()
 if __name__ == '__main__':
     while True:
         control.monitor(robot, time_step)
-        if not task_manager.is_empty():
+        queue_len = receiver.getQueueLength()
+        if queue_len > 0: 
+            data = receiver.getBytes() 
+            receiver.nextPacket()
+            data = struct.unpack('d', data)
+            d = int(data[0])
+            if d == 1:
+                task_pending = False
+
+        if not task_manager.is_empty() and not task_pending:
             t = task_manager.get_task()
+            task_pending = True
             t.execute(robot)
 
 # Enter here exit cleanup code.

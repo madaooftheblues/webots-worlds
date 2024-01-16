@@ -228,6 +228,9 @@ while True:
         else:
             print('human reached')
             motor_stop()
+            emitter.setChannel(0)
+            d = struct.pack("d", 1)
+            emitter.send(d)
             state = 'waiting'
     else:
         count -= 1
