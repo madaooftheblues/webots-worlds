@@ -123,9 +123,16 @@ while True:
                 counter = 120
                 state = 'releasing'
         elif state == 'releasing':
-                release()
-                counter = 90
-                state = 'reset'
+            if queue_len > 0:
+                data = receiver.getBytes() 
+                receiver.nextPacket()
+                data = struct.unpack('d', data)
+                data = int(data[0])
+                if data == 1:
+                    task_pending = False
+                    release()
+                    counter = 90
+                    state = 'reset'
         elif state == 'reset':
                 reset_arm_pos()
                 counter = 120

@@ -41,10 +41,15 @@ class PickPlace(Operation):
 
         # set emitter channe
         # if not detect(self.target.name, supervisor): return
+        selected_robot = choose_robot(self, self.target.coord)
         emitter = supervisor.getDevice('emitter')
-        emitter.setChannel(choose_robot(self, self.target.coord))
+        emitter.setChannel(selected_robot)
         coordinates = struct.pack("dd", self.target.pose[0], self.target.pose[1])
         emitter.send(coordinates)
+        emitter.setChannel(3)
+        tell_pioneer = struct.pack("d", int(selected_robot))
+        emitter.send(tell_pioneer)
+        emitter.setChannel(0)
 
 class Task:
     def __init__(self, id, name, operation):

@@ -3,6 +3,9 @@
 from controller import Robot, GPS, Compass
 import math
 import time
+import struct
+
+CHANNEL = 3
 
 COORDINATE_MATCHING_ACCURACY = 0.01 
 
@@ -10,7 +13,7 @@ THETA_MATCHING_ACCURACY = 1
 
 MAX_SPEED = 5.24
 
-TANGENSIAL_SPEED = 1.345678 #1.6
+TANGENSIAL_SPEED = 1.6 #1.345678 #1.6
 
 ROBOT_ANGULAR_SPEED_IN_DEGREES = 300
 
@@ -18,12 +21,16 @@ ROBOT_ANGULAR_SPEED_IN_DEGREES = 300
 robot = Robot()
 gps = robot.getDevice('gps')
 compass = robot.getDevice('compass')
+emitter = robot.getDevice('emitter')
+receiver = robot.getDevice('receiver')
 
 # get the time step of the current world.
 timestep = int(robot.getBasicTimeStep())
 
 gps.enable(timestep)
 compass.enable(timestep)
+receiver.enable(timestep)
+receiver.setChannel(CHANNEL)
 
 # fetch motors
 left_motor = robot.getDevice('left wheel')
@@ -166,14 +173,31 @@ def move_to_destination(current_coordinate, destination_coordinate):
 
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
+task_pending = False
 while True:
-    current_coordinate = gps.getValues()
-    if not is_coordinate_equal(current_coordinate, target_position):
-        move_to_destination(current_coordinate, target_position)
-    else:
-        print('hhe')
-        motor_stop()
-        step()
+    queue_len = receiver.getQueueLength()
+    if queue_len > 0 and not task_pending: 
+        data = receiver.getBytes() 
+        receiver.nextPacket()
+        data = struct.unpack("d", data)
+        arm = int(data[0])
+        emitter.setChannel(arm)
+        if arm == 2:
+            target_position = [0.8, 0.64, 1.09]
+        task_pending = True
+
+    if task_pending:
+        current_coordinate = gps.getValues()
+        if not is_coordinate_equal(current_coordinate, target_position):
+            move_to_destination(current_coordinate, target_position)
+        else:
+            print('destination reached')
+            motor_stop()
+            d = struct.pack("d", 1)
+            emitter.send(d)
+            task_pending = False
+
+    step()
     # Read the sensors:
     # Enter here functions to read sensor data, like:
     #  val = ds.getValue()
