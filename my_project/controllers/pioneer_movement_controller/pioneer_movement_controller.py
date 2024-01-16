@@ -36,6 +36,19 @@ receiver.setChannel(CHANNEL)
 left_motor = robot.getDevice('left wheel')
 right_motor  = robot.getDevice('right wheel')
 
+left_sensor_names = ['so0', 'so1', 'so2']
+right_sensor_names = ['so5', 'so6', 'so7']
+left_sensors = []
+right_sensors = []
+for s in left_sensor_names:
+    sen = robot.getDevice(s)
+    sen.enable(timestep)
+    left_sensors.append(sen)
+for s in right_sensor_names:
+    sen = robot.getDevice(s)
+    sen.enable(timestep)
+    right_sensors.append(sen)
+
 # set motors
 left_motor.setPosition(float('inf'))
 right_motor.setPosition(float('inf'))
@@ -177,7 +190,11 @@ human_position = [3.16, 3.16, 1]
 task_pending = False
 state = 'waiting'
 count = 0
+wait = 0
 while True:
+    if wait >= 0:
+        wait -= 1 
+        continue
     queue_len = receiver.getQueueLength()
     if queue_len > 0 and state == 'waiting':
         data = receiver.getBytes() 
@@ -187,6 +204,9 @@ while True:
         emitter.setChannel(arm)
         if arm == 2:
             target_position = [0.8, 0.64, 1.09]
+        else:
+            target_position = [-0.8, -0.64, 1.09]
+
         state = 'catching'
 
     if state == 'catching':
@@ -209,10 +229,22 @@ while True:
             print('human reached')
             motor_stop()
             state = 'waiting'
-    else: 
+    else:
         count -= 1
 
     step()
+    for s in right_sensors:
+        val = s.getValue()
+        if val > 80:
+            motor_rotate_left()
+            wait = 200
+            continue
+    for s in left_sensors:
+        val = s.getValue()
+        if val > 80:
+            motor_rotate_right()
+            wait = 200
+            continue
     # Read the sensors:
     # Enter here functions to read sensor data, like:
     #  val = ds.getValue()

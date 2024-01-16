@@ -63,7 +63,7 @@ grid = Grid()
 grid.add_artifact( Artifact("Orange", [0.12, -0.12, 1.79], (1, 1)) )
 grid.add_artifact( Artifact("Apple", [0.37, 0.12, 1.79], (1, 3)) )
 grid.add_artifact( Artifact("RubberDuck", [-0.12, 0.12, 1.79], (1, 1)) )
-grid.add_artifact( Artifact("SoccerBall", [0.37, 0.37, 1.81], (0, 3)) )
+grid.add_artifact( Artifact("SoccerBall", [-0.37, -0.37, 1.81], (0, 3)) )
 grid.add_artifact( Artifact("Wineglass", [-0.12, 0.37, 1.79], (0, 1)) )
 
 grid.print_artifacts()
