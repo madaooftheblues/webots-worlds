@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from world import Artifact
 import math
 import struct
-# from object_detection import detect
+from object_detection import detect
 
 class Operation:
     @abstractmethod
@@ -40,7 +40,7 @@ class PickPlace(Operation):
 
 
         # set emitter channe
-        # if not detect(self.target.name, supervisor): return
+        if not detect(self.target.name, supervisor): return
         selected_robot = choose_robot(self, self.target.coord)
         emitter = supervisor.getDevice('emitter')
         emitter.setChannel(selected_robot)
