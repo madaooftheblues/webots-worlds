@@ -173,10 +173,13 @@ def move_to_destination(current_coordinate, destination_coordinate):
 
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
+human_position = [3.16, 3.16, 1]
 task_pending = False
+state = 'waiting'
+count = 0
 while True:
     queue_len = receiver.getQueueLength()
-    if queue_len > 0 and not task_pending: 
+    if queue_len > 0 and state == 'waiting':
         data = receiver.getBytes() 
         receiver.nextPacket()
         data = struct.unpack("d", data)
@@ -184,9 +187,9 @@ while True:
         emitter.setChannel(arm)
         if arm == 2:
             target_position = [0.8, 0.64, 1.09]
-        task_pending = True
+        state = 'catching'
 
-    if task_pending:
+    if state == 'catching':
         current_coordinate = gps.getValues()
         if not is_coordinate_equal(current_coordinate, target_position):
             move_to_destination(current_coordinate, target_position)
@@ -195,7 +198,19 @@ while True:
             motor_stop()
             d = struct.pack("d", 1)
             emitter.send(d)
-            task_pending = False
+            count = 50
+            state = 'delivering'
+
+    if state == 'delivering' and count < 0:
+        current_coordinate = gps.getValues()
+        if not is_coordinate_equal(current_coordinate, human_position):
+            move_to_destination(current_coordinate, human_position)
+        else:
+            print('human reached')
+            motor_stop()
+            state = 'waiting'
+    else: 
+        count -= 1
 
     step()
     # Read the sensors:
