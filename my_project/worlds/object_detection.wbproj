@@ -6,7 +6,8 @@ maximizedDockId: -1
 centralWidgetVisible: 1
 projectionMode: PERSPECTIVE
 orthographicViewHeight: 1
-textFiles: -1
+textFiles: 0 "plugins/robot_windows/supervisor_window/supervisor_window.html" "plugins/robot_windows/supervisor_window/supervisor_window.css" "plugins/robot_windows/supervisor_window/supervisor_window.js" "plugins/robot_windows/supervisor_window/supervisor_window.c"
+robotWindow: CAM
 globalOptionalRendering: CameraFrustums
 consoles: Console:All:All
 renderingDevicePerspectives: CAM body:CAM:camera;0;0.43;0;0
