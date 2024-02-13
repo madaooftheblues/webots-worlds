@@ -13,7 +13,12 @@ The robots then collaborate to deliver the requested object to the human.
 
 ![A closeup shot of the simulation](./assets/images/simulation_closeup.png)
 
-The requested object is first identified, and if it present, it is picked up by a UR5e manipulator/arm robot. The arm which is closer to the identified object picks it up.
+- The requested object is first identified, and if it present, it is picked up by a UR5e manipulator/arm robot. The arm which is closer to the identified object picks it up.
+
+![A ur5e manipulator robot picking up the requested object](./assets/images/ur5e_pick_place.png)
+
+- The requested object is first identified, and if it present, it is picked up by a UR5e manipulator/arm robot. The arm which is closer to the identified object picks it up.
+
 ![A ur5e manipulator robot picking up the requested object](./assets/images/ur5e_pick_place.png)
 
 
