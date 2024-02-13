@@ -36,4 +36,5 @@ The robots then collaborate to deliver the requested object to the human.
 
 ![A mobile robot delivering an object to the human's location](./assets/images/pioneer_delivery.png)
 
-
+## Task Scheduling
+The purpose of this study was to simulate an industrial setup to experiment with human-robot interaction and collaborative scenarios, where the number of incoming jobs is higher than the number of robots available; task execution is based on first-come-first-serve principle. The simulaion has established a baseline for the study of preemptive task scheduling in robots, to manage the ‘task vs resource’ availability dilemma.
