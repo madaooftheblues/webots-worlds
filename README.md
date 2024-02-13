@@ -4,6 +4,8 @@ Through the simulation of the industrial environment, productive ways can be ded
 The scope includes sensors and perception, actuators and actions, maintaining team and task states.
 The project incorporates an easy-to-setup, cost-effective and convenient simulation of human-robot collaboration on the industrial floor, which can later be deployed on-field. 
 
+> Check out the frontend interface of the simulation [here](https://github.com/madaooftheblues/simulation_interface).
+
 ![A broad shot of the simulation](./assets/images/simulation_view.png)
 
 ## Scenario Tested
