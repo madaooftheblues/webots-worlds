@@ -13,12 +13,20 @@ The robots then collaborate to deliver the requested object to the human.
 
 ![A closeup shot of the simulation](./assets/images/simulation_closeup.png)
 
-- The requested object is first identified, and if it present, it is picked up by a UR5e manipulator/arm robot. The arm which is closer to the identified object picks it up.
+> The requested object is first identified, and if it present, it is picked up by a UR5e manipulator/arm robot. The arm which is closer to the identified object picks it up.
 
 ![A ur5e manipulator robot picking up the requested object](./assets/images/ur5e_pick_place.png)
 
-- The requested object is first identified, and if it present, it is picked up by a UR5e manipulator/arm robot. The arm which is closer to the identified object picks it up.
+> The UR5e that has picked the object then waits for the Pioneer 3-DX mobile robot to to arrive at the appropriate catching location.
 
-![A ur5e manipulator robot picking up the requested object](./assets/images/ur5e_pick_place.png)
+![A Pioneer 3-DX mobile robot at a suitable location to catch the object from UR5e arm robot](./assets/images/pioneer_fetch.png)
+
+> As the mobile robot reaches the location, the arm robot drops the object onto a basket embedded on the mobile robot.
+
+![The mobile robot catches the requested object](./assets/images/pioneer_catch.png)
+
+> The mobile robot then delivers the caught object to the human's location
+
+![A mobile robot delivering an object to the human's location](./assets/images/pioneer_deliver.png)
 
 
